@@ -1,9 +1,11 @@
+ECE736_HW3/problem1/scene/data/part1/*
+
 *.xcodeproj/*xcuserdata*
 *.xcodeproj/project.xcworkspace/*xcuserdata*
 *.xcodeproj/project.xcworkspace/xcshareddata/
 mex/*
 mex
-data
+data/*
 *.o
 *.pyc
 *~
