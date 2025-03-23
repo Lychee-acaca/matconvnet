@@ -22,12 +22,12 @@ opts.batchSize = 50 ;
 % opts.learningRate is a critical parameter that can dramatically affect
 % whether training succeeds or fails. For most of the experiments in this
 % project the default learning rate is safe.
-opts.learningRate = 0.0001 ;
+opts.learningRate = logspace(-3, -5, 120) ;
 
 % opts.numEpochs is the number of epochs. If you experiment with more
 % complex networks you might need to increase this. Likewise if you add
 % regularization that slows training.
-opts.numEpochs = 30 ;
+opts.numEpochs = 200 ;
 
 % An example of learning rate decay as an alternative to the fixed learning
 % rate used by default. This isn't necessary but can lead to better
