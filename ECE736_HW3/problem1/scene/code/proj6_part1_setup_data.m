@@ -65,4 +65,19 @@ for set = 1:length(sets)
     end
 end
 
+% subtract the mean from train image
+sum_img = single(zeros(64, 64));
+train_cnt = 0;
+for i=1:length(imdb.images.data)
+    if imdb.images.set(i) == 1
+        train_cnt = train_cnt + 1;
+        sum_img = sum_img + imdb.images.data(:,:,1,i);
+    end
+end
+imdb.images.train_mean = sum_img / train_cnt;
+for i=1:length(imdb.images.data)
+    imdb.images.data(:,:,1,i) = ...
+        imdb.images.data(:,:,1,i) - imdb.images.train_mean;
+end
+
 
