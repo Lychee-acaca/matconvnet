@@ -104,6 +104,24 @@ rng(0);
 jitter_num = randi([0, size(batch, 2)]);
 for i=1:jitter_num
     im(:,:,1,i) = fliplr(im(:,:,1,i));
+
+    rng(114514);
+    zooming_flag = rand;
+    if zooming_flag < 0.1
+        crop_size = randi([55, 60]);
+        x = randi([1, 64 - crop_size]);
+        y = randi([1, 64 - crop_size]);
+        cropped_img = imcrop(im(:,:,1,i), ...
+            [x, y, crop_size-1, crop_size-1]);
+        im(:,:,1,i) = imresize(cropped_img, [64, 64]);
+    end
+    rotating_flag = rand;
+    if rotating_flag < 0.1
+        angle = -5 + 10 * rand;
+        rotated_img = imrotate(im(:,:,1,i), angle, 'bilinear', 'loose');
+        center_crop = centerCropWindow2d(size(rotated_img), [64, 64]);
+        im(:,:,1,i) = imcrop(rotated_img, center_crop);
+    end
 end
 
 end
