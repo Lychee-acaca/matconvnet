@@ -157,7 +157,7 @@ for epoch=start+1:opts.numEpochs
     spmd
       [net, state] = processEpoch(net, state, params, 'train') ;
       [net, state] = processEpoch(net, state, params, 'val') ;
-      if labindex == 1 && ~evaluateMode
+      if spmdIndex == 1 && ~evaluateMode
         saveState(modelPath(epoch), net, state) ;
       end
       lastStats = state.stats ;
@@ -316,9 +316,9 @@ for t=1:params.batchSize:numel(subset)
 
   for s=1:params.numSubBatches
     % get this image batch and prefetch the next
-    batchStart = t + (labindex-1) + (s-1) * numlabs ;
+    batchStart = t + (spmdIndex-1) + (s-1) * spmdSize ;
     batchEnd = min(t+params.batchSize-1, numel(subset)) ;
-    batch = subset(batchStart : params.numSubBatches * numlabs : batchEnd) ;
+    batch = subset(batchStart : params.numSubBatches * spmdSize : batchEnd) ;
     num = num + numel(batch) ;
     if numel(batch) == 0, continue ; end
 
@@ -326,12 +326,12 @@ for t=1:params.batchSize:numel(subset)
 
     if params.prefetch
       if s == params.numSubBatches
-        batchStart = t + (labindex-1) + params.batchSize ;
+        batchStart = t + (spmdIndex-1) + params.batchSize ;
         batchEnd = min(t+2*params.batchSize-1, numel(subset)) ;
       else
-        batchStart = batchStart + numlabs ;
+        batchStart = batchStart + spmdSize ;
       end
-      nextBatch = subset(batchStart : params.numSubBatches * numlabs : batchEnd) ;
+      nextBatch = subset(batchStart : params.numSubBatches * spmdSize : batchEnd) ;
       params.getBatch(params.imdb, nextBatch) ;
     end
 
@@ -451,7 +451,7 @@ net = vl_simplenn_move(net, 'cpu') ;
 function [net, res, state] = accumulateGradients(net, res, state, params, parserv)
 % -------------------------------------------------------------------------
 numGpus = numel(params.gpus) ;
-otherGpus = setdiff(1:numGpus, labindex) ;
+otherGpus = setdiff(1:numGpus, spmdIndex) ;
 numWorkers = max(1,numGpus) * params.numSubBatches ;
 
 for l=numel(net.layers):-1:1
@@ -654,7 +654,7 @@ if numGpus >= 1 && cold
   else
     spmd
       clearMex() ;
-      disp(gpuDevice(params.gpus(labindex))) ;
+      disp(gpuDevice(params.gpus(spmdIndex))) ;
     end
   end
 end

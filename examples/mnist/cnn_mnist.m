@@ -99,9 +99,12 @@ end
 
 for i=1:4
   if ~exist(fullfile(opts.dataDir, files{i}), 'file')
-    url = sprintf('http://yann.lecun.com/exdb/mnist/%s.gz',files{i}) ;
-    fprintf('downloading %s\n', url) ;
-    gunzip(url, opts.dataDir) ;
+    % https://web.archive.org/web/20161113215946/http://yann.lecun.com/exdb/mnist
+    % url = sprintf('http://yann.lecun.com/exdb/mnist/%s.gz',files{i}) ;
+    % fprintf('downloading %s\n', url) ;
+    % gunzip(url, opts.dataDir) ;
+    path = sprintf('./mnist_data/%s.gz',files{i}) ;
+    gunzip(path, opts.dataDir) ;
   end
 end
 
