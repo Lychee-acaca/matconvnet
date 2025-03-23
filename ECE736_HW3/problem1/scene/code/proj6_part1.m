@@ -100,7 +100,11 @@ im = imdb.images.data(:,:,:,batch) ;
 labels = imdb.images.labels(1,batch) ;
 
 % Add jittering here before returning im
-
+rng(0);
+jitter_num = randi([0, size(batch, 2)]);
+for i=1:jitter_num
+    im(:,:,1,i) = fliplr(im(:,:,1,i));
+end
 
 end
 
